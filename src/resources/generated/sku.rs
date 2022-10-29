@@ -85,19 +85,23 @@ impl Sku {
     /// Returns a list of your SKUs.
     ///
     /// The SKUs are returned sorted by creation date, with the most recently created SKUs appearing first.
-    pub fn list(client: &Client, params: &ListSkus<'_>) -> Response<List<Sku>> {
+    pub fn list<'a>(client: &'a Client, params: &'a ListSkus<'a>) -> Response<'a, List<Sku>> {
         client.get_query("/skus", &params)
     }
 
     /// Creates a new SKU associated with a product.
-    pub fn create(client: &Client, params: CreateSku<'_>) -> Response<Sku> {
+    pub fn create<'a>(client: &'a Client, params: CreateSku<'a>) -> Response<'a, Sku> {
         client.post_form("/skus", &params)
     }
 
     /// Retrieves the details of an existing SKU.
     ///
     /// Supply the unique SKU identifier from either a SKU creation request or from the product, and Stripe will return the corresponding SKU information.
-    pub fn retrieve(client: &Client, id: &SkuId, expand: &[&str]) -> Response<Sku> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a SkuId,
+        expand: &'a [&str],
+    ) -> Response<'a, Sku> {
         client.get_query(&format!("/skus/{}", id), &Expand { expand })
     }
 
@@ -105,14 +109,18 @@ impl Sku {
     ///
     /// Any parameters not provided will be left unchanged.  Note that a SKU’s `attributes` are not editable.
     /// Instead, you would need to deactivate the existing SKU and create a new one with the new attribute values.
-    pub fn update(client: &Client, id: &SkuId, params: UpdateSku<'_>) -> Response<Sku> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a SkuId,
+        params: UpdateSku<'a>,
+    ) -> Response<'a, Sku> {
         client.post_form(&format!("/skus/{}", id), &params)
     }
 
     /// Delete a SKU.
     ///
     /// Deleting a SKU is only possible until it has been used in an order.
-    pub fn delete(client: &Client, id: &SkuId) -> Response<Deleted<SkuId>> {
+    pub fn delete<'a>(client: &'a Client, id: &'a SkuId) -> Response<'a, Deleted<SkuId>> {
         client.delete(&format!("/skus/{}", id))
     }
 }

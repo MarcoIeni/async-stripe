@@ -116,9 +116,6 @@ pub struct TerminalReaderReaderResourceProcessConfig {
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct TerminalReaderReaderResourceProcessSetupIntentAction {
-    /// ID of a card PaymentMethod generated from the card_present PaymentMethod that may be attached to a Customer for future transactions.
-    ///
-    /// Only present if it was possible to generate a card PaymentMethod.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub generated_card: Option<String>,
 

@@ -132,7 +132,10 @@ pub struct SetupIntent {
 
 impl SetupIntent {
     /// Returns a list of SetupIntents.
-    pub fn list(client: &Client, params: &ListSetupIntents<'_>) -> Response<List<SetupIntent>> {
+    pub fn list<'a>(
+        client: &'a Client,
+        params: &'a ListSetupIntents<'a>,
+    ) -> Response<'a, List<SetupIntent>> {
         client.get_query("/setup_intents", &params)
     }
 
@@ -140,7 +143,10 @@ impl SetupIntent {
     ///
     /// After the SetupIntent is created, attach a payment method and [confirm](https://stripe.com/docs/api/setup_intents/confirm)
     /// to collect any required permissions to charge the payment method later.
-    pub fn create(client: &Client, params: CreateSetupIntent<'_>) -> Response<SetupIntent> {
+    pub fn create<'a>(
+        client: &'a Client,
+        params: CreateSetupIntent<'a>,
+    ) -> Response<'a, SetupIntent> {
         client.post_form("/setup_intents", &params)
     }
 
@@ -149,16 +155,20 @@ impl SetupIntent {
     /// Client-side retrieval using a publishable key is allowed when the `client_secret` is provided in the query string.
     /// When retrieved with a publishable key, only a subset of properties will be returned.
     /// Please refer to the [SetupIntent](https://stripe.com/docs/api#setup_intent_object) object reference for more details.
-    pub fn retrieve(client: &Client, id: &SetupIntentId, expand: &[&str]) -> Response<SetupIntent> {
+    pub fn retrieve<'a>(
+        client: &'a Client,
+        id: &'a SetupIntentId,
+        expand: &'a [&str],
+    ) -> Response<'a, SetupIntent> {
         client.get_query(&format!("/setup_intents/{}", id), &Expand { expand })
     }
 
     /// Updates a SetupIntent object.
-    pub fn update(
-        client: &Client,
-        id: &SetupIntentId,
-        params: UpdateSetupIntent<'_>,
-    ) -> Response<SetupIntent> {
+    pub fn update<'a>(
+        client: &'a Client,
+        id: &'a SetupIntentId,
+        params: UpdateSetupIntent<'a>,
+    ) -> Response<'a, SetupIntent> {
         client.post_form(&format!("/setup_intents/{}", id), &params)
     }
 }
@@ -1125,9 +1135,6 @@ pub struct CreateSetupIntentPaymentMethodOptionsCard {
     pub mandate_options: Option<CreateSetupIntentPaymentMethodOptionsCardMandateOptions>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub network: Option<CreateSetupIntentPaymentMethodOptionsCardNetwork>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
         Option<CreateSetupIntentPaymentMethodOptionsCardRequestThreeDSecure>,
 }
@@ -1335,9 +1342,6 @@ pub struct UpdateSetupIntentPaymentMethodOptionsBlik {
 pub struct UpdateSetupIntentPaymentMethodOptionsCard {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mandate_options: Option<UpdateSetupIntentPaymentMethodOptionsCardMandateOptions>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub network: Option<UpdateSetupIntentPaymentMethodOptionsCardNetwork>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub request_three_d_secure:
@@ -2502,56 +2506,6 @@ impl std::default::Default
 {
     fn default() -> Self {
         Self::India
-    }
-}
-
-/// An enum representing the possible values of an `CreateSetupIntentPaymentMethodOptionsCard`'s `network` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum CreateSetupIntentPaymentMethodOptionsCardNetwork {
-    Amex,
-    CartesBancaires,
-    Diners,
-    Discover,
-    Interac,
-    Jcb,
-    Mastercard,
-    Unionpay,
-    Unknown,
-    Visa,
-}
-
-impl CreateSetupIntentPaymentMethodOptionsCardNetwork {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            CreateSetupIntentPaymentMethodOptionsCardNetwork::Amex => "amex",
-            CreateSetupIntentPaymentMethodOptionsCardNetwork::CartesBancaires => "cartes_bancaires",
-            CreateSetupIntentPaymentMethodOptionsCardNetwork::Diners => "diners",
-            CreateSetupIntentPaymentMethodOptionsCardNetwork::Discover => "discover",
-            CreateSetupIntentPaymentMethodOptionsCardNetwork::Interac => "interac",
-            CreateSetupIntentPaymentMethodOptionsCardNetwork::Jcb => "jcb",
-            CreateSetupIntentPaymentMethodOptionsCardNetwork::Mastercard => "mastercard",
-            CreateSetupIntentPaymentMethodOptionsCardNetwork::Unionpay => "unionpay",
-            CreateSetupIntentPaymentMethodOptionsCardNetwork::Unknown => "unknown",
-            CreateSetupIntentPaymentMethodOptionsCardNetwork::Visa => "visa",
-        }
-    }
-}
-
-impl AsRef<str> for CreateSetupIntentPaymentMethodOptionsCardNetwork {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for CreateSetupIntentPaymentMethodOptionsCardNetwork {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for CreateSetupIntentPaymentMethodOptionsCardNetwork {
-    fn default() -> Self {
-        Self::Amex
     }
 }
 
@@ -4144,56 +4098,6 @@ impl std::default::Default
 {
     fn default() -> Self {
         Self::India
-    }
-}
-
-/// An enum representing the possible values of an `UpdateSetupIntentPaymentMethodOptionsCard`'s `network` field.
-#[derive(Copy, Clone, Debug, Deserialize, Serialize, Eq, PartialEq)]
-#[serde(rename_all = "snake_case")]
-pub enum UpdateSetupIntentPaymentMethodOptionsCardNetwork {
-    Amex,
-    CartesBancaires,
-    Diners,
-    Discover,
-    Interac,
-    Jcb,
-    Mastercard,
-    Unionpay,
-    Unknown,
-    Visa,
-}
-
-impl UpdateSetupIntentPaymentMethodOptionsCardNetwork {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            UpdateSetupIntentPaymentMethodOptionsCardNetwork::Amex => "amex",
-            UpdateSetupIntentPaymentMethodOptionsCardNetwork::CartesBancaires => "cartes_bancaires",
-            UpdateSetupIntentPaymentMethodOptionsCardNetwork::Diners => "diners",
-            UpdateSetupIntentPaymentMethodOptionsCardNetwork::Discover => "discover",
-            UpdateSetupIntentPaymentMethodOptionsCardNetwork::Interac => "interac",
-            UpdateSetupIntentPaymentMethodOptionsCardNetwork::Jcb => "jcb",
-            UpdateSetupIntentPaymentMethodOptionsCardNetwork::Mastercard => "mastercard",
-            UpdateSetupIntentPaymentMethodOptionsCardNetwork::Unionpay => "unionpay",
-            UpdateSetupIntentPaymentMethodOptionsCardNetwork::Unknown => "unknown",
-            UpdateSetupIntentPaymentMethodOptionsCardNetwork::Visa => "visa",
-        }
-    }
-}
-
-impl AsRef<str> for UpdateSetupIntentPaymentMethodOptionsCardNetwork {
-    fn as_ref(&self) -> &str {
-        self.as_str()
-    }
-}
-
-impl std::fmt::Display for UpdateSetupIntentPaymentMethodOptionsCardNetwork {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().fmt(f)
-    }
-}
-impl std::default::Default for UpdateSetupIntentPaymentMethodOptionsCardNetwork {
-    fn default() -> Self {
-        Self::Amex
     }
 }
 

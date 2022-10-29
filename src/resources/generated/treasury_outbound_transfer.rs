@@ -37,8 +37,7 @@ pub struct TreasuryOutboundTransfer {
     pub description: Option<String>,
 
     /// The PaymentMethod used as the payment instrument for an OutboundTransfer.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub destination_payment_method: Option<String>,
+    pub destination_payment_method: String,
 
     pub destination_payment_method_details: OutboundTransfersPaymentMethodDetails,
 
